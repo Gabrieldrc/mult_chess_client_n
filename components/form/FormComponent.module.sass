@@ -1,0 +1,24 @@
+@use '../../styles/colors' as c
+@use '../../styles/classes' as cl
+.form
+  border: 2px solid c.$contrastColor
+  width: min-content
+  padding: 3rem 2rem
+  input
+    border: none
+    &:focus
+      border: none
+  p
+    display: flex
+    justify-content: center
+  button
+    width: 100%
+    color: c.$primaryColor
+    background-color: c.$contrastColor
+    font-weight: 900
+    border: none
+    margin-top: 1rem
+    &:hover
+      color: c.$primaryColor
+      background-color: c.$contrastColor2
+      cursor: pointer
