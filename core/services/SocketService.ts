@@ -8,7 +8,7 @@ export default class SocketService {
     }
     return this._singleton
   }
-  static listen(event: string, callback: ()=>void) {
+  static listen(event: string, callback: (...arg: any[])=>void) {
     this.getSocket().on(event, callback)
   }
   static emit(event: string, ...data: any[]) {
