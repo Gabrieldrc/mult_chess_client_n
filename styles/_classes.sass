@@ -1,3 +1,4 @@
+@use './colors' as c
 .full-width
   width: 100%
 .full-height
@@ -8,3 +9,10 @@
   align-items: center
 .round-border
   border-radius: 10px
+.error-form
+  margin-top: 1rem
+  padding: 1rem
+  background-color: c.$errorColor
+  color: c.$primaryColor
+  width: 100%
+  justify-content: left

@@ -4,8 +4,10 @@ import FormComponent from "../../components/form/FormComponent";
 import { ChangeEvent, useState, MouseEvent, useEffect } from "react";
 import SocketService from "../../core/services/SocketService";
 import WsResponse from "../../core/interfaces/WsResponse";
+
 const ChessIndex: NextPage = () => {
   const [room, setRoom] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -16,22 +18,23 @@ const ChessIndex: NextPage = () => {
         router.push(`${router.pathname}/room/${response.data.room}`);
       }
     });
+    SocketService.listen("error", (res) => {
+      setError(res.data.error)
+    })
   }, []);
   const handleJoinRoomButton = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // console.log(room);
-    // SocketService.emit("joinGame", room, (response: any) => {
-    //   if (response.status == "ok") {
-    //   }
-    // });
   };
+
   const handleRoomInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setRoom(event.target.value);
   };
+
   const handleNewGameButton = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     SocketService.emit("newGame");
   };
+
   return (
     <section className={"full-width full-height flex-center"}>
       <FormComponent>
@@ -47,6 +50,10 @@ const ChessIndex: NextPage = () => {
         <button onClick={(event) => handleNewGameButton(event)}>
           New Game
         </button>
+        {
+          error? <span className={"error-form"}><b>Error:</b>{error}</span> : ""
+        }
+        
       </FormComponent>
     </section>
   );
