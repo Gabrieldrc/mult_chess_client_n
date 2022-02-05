@@ -1,6 +1,7 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import ChessComponent from "../../../components/ChessComponent/ChessComponent";
 import { chessClient } from "../../../core/services/ChessClient";
 import SocketService from "../../../core/services/SocketService";
 const Room: NextPage = () => {
@@ -13,8 +14,8 @@ const Room: NextPage = () => {
     async function fetchInitialState() {
       const resp = await chessClient.getState(`${room}`);
       if (resp.status == 200) {
-        setBoard(resp.data['response']['board'])
-        setTurn(resp.data['response']['turn'])
+        setBoard(resp.data["response"]["board"]);
+        setTurn(resp.data["response"]["turn"]);
       }
     }
     fetchInitialState();
@@ -22,7 +23,10 @@ const Room: NextPage = () => {
   }, []);
 
   return (
-    <h1>{`Share your room code: ${room}`}</h1>
+    <>
+      <h1>{`Share your room code: ${room}`}</h1>
+      {board ? <ChessComponent board={board}></ChessComponent> : ""}
+    </>
   );
 };
 
