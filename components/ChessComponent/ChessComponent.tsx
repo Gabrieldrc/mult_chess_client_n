@@ -8,9 +8,9 @@ const ChessComponent: NextComponentType = (props) => {
   const PIECE_SRC = "/images/chess_pieces/";
   let chessBoard: Array<Array<PieceInterface>> = props.board;
 
-  const clickHandler = (e: Event) => {
+  const clickHandler = (e: Event, i, j) => {
     e.preventDefault();
-    console.log(e);
+    console.log(i, j, e);
   };
   const createBoard = () => {
     const boardContents: any[] = [];
@@ -22,7 +22,7 @@ const ChessComponent: NextComponentType = (props) => {
         const {name, player} = elemtent;
         const bgclr = flagCol? style.bc_1 : style.bc_2;
         const grid = (
-          <div id={`chess-grid-${i}${j}`} key={`${i}${j}`} className={`${style.grid} ${bgclr}`} onClick={clickHandler}>
+          <div id={`chess-grid-${i}${j}`} key={`${i}${j}`} className={`${style.grid} ${bgclr}`} onClick={(e) => clickHandler(e, i, j)}>
             {
               elemtent.name == ""? "" :
               <Image src={`${PIECE_SRC}${name}_${player}.png`} alt={`${i}${j}`} layout="intrinsic" width={50} height={50} key={`${PIECE_SRC}${name}_${player}`}/>
