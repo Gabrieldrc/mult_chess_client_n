@@ -8,35 +8,60 @@ const ChessComponent: NextComponentType = (props) => {
   const PIECE_SRC = "/images/chess_pieces/";
   let chessBoard: Array<Array<PieceInterface>> = props.board;
 
-  const clickHandler = (e: Event, i, j) => {
+  const clickHandler = (e: Event, i: number, j: number) => {
     e.preventDefault();
-    console.log(i, j, e);
+    const highlightPositions = chessBoard[i][j].placeCanMove;
+    highlightPositions.map((position) => {
+      
+      const element = document.getElementById(
+        `chess-grid-${position.i}${position.j}`
+        )
+      console.log(position, element);
+      element?.className = `${style.grid} ${style.bc_hl}`;
+    });
   };
   const createBoard = () => {
     const boardContents: any[] = [];
     let flagRow = true;
     chessBoard.map((col, i) => {
       const rowHtml: any[] = [];
-      let flagCol = flagRow
+      let flagCol = flagRow;
       col.map((elemtent, j) => {
-        const {name, player} = elemtent;
-        const bgclr = flagCol? style.bc_1 : style.bc_2;
+        const { name, player } = elemtent;
+        const bgclr = flagCol ? style.bc_1 : style.bc_2;
         const grid = (
-          <div id={`chess-grid-${i}${j}`} key={`${i}${j}`} className={`${style.grid} ${bgclr}`} onClick={(e) => clickHandler(e, i, j)}>
-            {
-              elemtent.name == ""? "" :
-              <Image src={`${PIECE_SRC}${name}_${player}.png`} alt={`${i}${j}`} layout="intrinsic" width={50} height={50} key={`${PIECE_SRC}${name}_${player}`}/>
-            }
+          <div
+            id={`chess-grid-${i}${j}`}
+            key={`${i}${j}`}
+            className={`${style.grid} ${bgclr}`}
+            onClick={(e) => clickHandler(e, i, j)}
+          >
+            {elemtent.name == "" ? (
+              ""
+            ) : (
+              <Image
+                src={`${PIECE_SRC}${name}_${player}.png`}
+                alt={`${i}${j}`}
+                layout="intrinsic"
+                width={50}
+                height={50}
+                key={`${PIECE_SRC}${name}_${player}`}
+              />
+            )}
           </div>
         );
         flagCol = !flagCol;
         rowHtml.push(grid);
       });
       flagRow = !flagRow;
-      boardContents.push(<div key={`row_${i}`} className={style.row}>{rowHtml}</div>);
+      boardContents.push(
+        <div key={`row_${i}`} className={style.row}>
+          {rowHtml}
+        </div>
+      );
     });
 
-    return (<div className={style.chess_board}>{boardContents}</div>);
+    return <div className={style.chess_board}>{boardContents}</div>;
   };
 
   return <>{createBoard()}</>;
