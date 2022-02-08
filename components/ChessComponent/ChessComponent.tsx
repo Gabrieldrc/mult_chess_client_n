@@ -3,11 +3,14 @@ import { Component, useEffect, useState } from "react";
 import Image from "next/image";
 import { NextComponentType } from "next";
 import PieceInterface from "../../core/interfaces/Piece.interface";
+import PositionInterface from "../../core/interfaces/Position.interface";
+import SocketService from "../../core/services/SocketService";
 
 const ChessComponent: NextComponentType = (props) => {
   const PIECE_SRC = "/images/chess_pieces/";
   let chessBoard: Array<Array<PieceInterface>> = props.board;
   const [board, setBoard] = useState(<></>);
+  let selectedPiecePosition: PositionInterface | null = null 
 
   const paintBoard = () => {
     let flagRow = true;
@@ -26,12 +29,26 @@ const ChessComponent: NextComponentType = (props) => {
 
   const clickHandler = (e: Event, i: number, j: number) => {
     e.preventDefault();
+
+    if (selectedPiecePosition) {
+      const isAMoveablePlace = chessBoard[selectedPiecePosition.i][selectedPiecePosition.j]
+        .placeCanMove.some(position => position.i == i && position.j == j);
+      if (isAMoveablePlace) {
+        SocketService.emit("play", {from: selectedPiecePosition, to: { i, j}});
+        selectedPiecePosition = null;
+        return;
+      }
+    }
+
     paintBoard();
     const highlightPositions = chessBoard[i][j].placeCanMove;
     highlightPositions.map((position) => {
       const element = document.getElementById(gridId(position.i, position.j));
       element?.className = `${style.grid} ${style.bc_hl}`;
     });
+    selectedPiecePosition = { i, j}
+
+    return
   };
 
   useEffect(() => {
@@ -79,7 +96,7 @@ const ChessComponent: NextComponentType = (props) => {
 
     createBoard();
     paintBoard();
-  }, []);
+  }, [props.board]);
 
   return <>{board}</>;
 };

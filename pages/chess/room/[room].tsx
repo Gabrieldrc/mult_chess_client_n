@@ -2,12 +2,13 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ChessComponent from "../../../components/ChessComponent/ChessComponent";
+import WsResponse from "../../../core/interfaces/WsResponse";
 import { chessClient } from "../../../core/services/ChessClient";
 import SocketService from "../../../core/services/SocketService";
 const Room: NextPage = () => {
   const router = useRouter();
   const { room } = router.query;
-  const [turn, setTurn] = useState(null);
+  const [turn, setTurn] = useState(-1);
   const [board, setBoard] = useState(null);
 
   useEffect(() => {
@@ -19,13 +20,28 @@ const Room: NextPage = () => {
       }
     }
     fetchInitialState();
-    // SocketService.listen()
+
+    SocketService.listen("gameStateUpdate", (response: any) => {
+      if (response.ok) {
+        console.log(response.data["board"]);
+        console.log(response.data["turn"]);
+        setBoard(response.data["board"]);
+        setTurn(response.data["turn"]);
+        
+      }
+    });
+
+    SocketService.listen("error", (response: any) => {
+      console.error('Error socket', response.error)
+    });
+
   }, []);
 
   return (
     <>
       <h1>{`Share your room code: ${room}`}</h1>
-      {board ? <ChessComponent board={board}></ChessComponent> : ""}
+       <h2>{turn != -1? turn: ''}</h2>
+      {board ? <ChessComponent board={board} room={room}></ChessComponent> : ""}
     </>
   );
 };
