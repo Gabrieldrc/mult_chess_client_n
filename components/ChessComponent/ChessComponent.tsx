@@ -6,11 +6,12 @@ import PieceInterface from "../../core/interfaces/Piece.interface";
 import PositionInterface from "../../core/interfaces/Position.interface";
 import SocketService from "../../core/services/SocketService";
 
-const ChessComponent: NextComponentType = (props) => {
+const ChessComponent: NextComponentType = ({ board, playerNumber, turn }) => {
   const PIECE_SRC = "/images/chess_pieces/";
-  let chessBoard: Array<Array<PieceInterface>> = props.board;
-  const [board, setBoard] = useState(<></>);
-  let selectedPiecePosition: PositionInterface | null = null 
+  let chessBoard: Array<Array<PieceInterface>> = board;
+  let player: number = playerNumber;
+  const [boardComponent, setBoardComponent] = useState(<></>);
+  let positionSelected: PositionInterface | null = null;
 
   const paintBoard = () => {
     let flagRow = true;
@@ -29,30 +30,66 @@ const ChessComponent: NextComponentType = (props) => {
 
   const clickHandler = (e: Event, i: number, j: number) => {
     e.preventDefault();
-
-    if (selectedPiecePosition) {
-      const isAMoveablePlace = chessBoard[selectedPiecePosition.i][selectedPiecePosition.j]
-        .placeCanMove.some(position => position.i == i && position.j == j);
-      if (isAMoveablePlace) {
-        SocketService.emit("play", {from: selectedPiecePosition, to: { i, j}});
-        selectedPiecePosition = null;
-        return;
-      }
+    //it cant select if its not its turn
+    if (turn !== player) {
+      console.log("no es tu turno");
+      
+      return;
     }
 
-    paintBoard();
-    const highlightPositions = chessBoard[i][j].placeCanMove;
-    highlightPositions.map((position) => {
-      const element = document.getElementById(gridId(position.i, position.j));
-      element?.className = `${style.grid} ${style.bc_hl}`;
-    });
-    selectedPiecePosition = { i, j}
+    const element = chessBoard[i][j];
 
-    return
+    if (!positionSelected && element.name == "") {
+      console.log("position vacia");
+      
+      return;
+    }
+
+    if (!positionSelected && element.player !== player) {
+      console.log("no es tu ficha");
+      
+      return;
+    }
+
+    if (element.player == player) {
+      positionSelected = { i: i, j: j };
+      paintBoard();
+      const highlightPositions = chessBoard[i][j].placeCanMove;
+      highlightPositions.map((position) => {
+        const htmlElement = document.getElementById(
+          gridId(position.i, position.j)
+        );
+        htmlElement?.className = `${style.grid} ${style.bc_hl}`;
+      });
+
+      console.log("seleccionaste una ficha");
+      return;
+    }
+
+    if (positionSelected && element.player !== player) {
+      const position = chessBoard[positionSelected.i][
+        positionSelected.j
+      ].placeCanMove.find((position) => position.i == i && position.j == j);
+      if (position == undefined) {
+        console.log("no te puedes mover alli");
+        
+        return;
+      }
+      console.log("play", {
+        from: positionSelected,
+        to: position,
+      });
+      
+      SocketService.emit("play", {
+        from: positionSelected,
+        to: position,
+      });
+      positionSelected = null;
+    }
   };
 
-  useEffect(() => {
-    const createBoard = () => {
+  useEffect(
+    function createBoard() {
       const boardContents: any[] = [];
 
       chessBoard.map((col, i) => {
@@ -89,16 +126,23 @@ const ChessComponent: NextComponentType = (props) => {
             {rowHtml}
           </div>
         );
-      });
+      }, []);
 
-      setBoard(<div className={style.chess_board}>{boardContents}</div>);
-    };
+      setBoardComponent(
+        <div className={style.chess_board}>{boardContents}</div>
+      );
+    },
+    [board]
+  );
 
-    createBoard();
-    paintBoard();
-  }, [props.board]);
+  useEffect(
+    function initPaintBoard() {
+      paintBoard();
+    },
+    [boardComponent]
+  );
 
-  return <>{board}</>;
+  return <>{boardComponent}</>;
 };
 
 export default ChessComponent;

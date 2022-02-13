@@ -15,6 +15,7 @@ const ChessIndex: NextPage = () => {
     SocketService.listen("newGame", (response: WsResponse) => {
       if (response.ok) {
         console.log(`${router.pathname}/room/${response.data.room}`);
+        localStorage.setItem('playerNumber', response.data['playerNumber'])
         router.push(`${router.pathname}/room/${response.data.room}`);
       }
     });

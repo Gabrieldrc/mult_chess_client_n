@@ -11,6 +11,9 @@ export default class SocketService {
   static listen(event: string, callback: (...arg: any[])=>void) {
     this.getSocket().on(event, callback)
   }
+  static removeAllListener() {
+    this.getSocket().removeAllListeners()
+  }
   static emit(event: string, ...data: any[]) {
     this.getSocket().emit(event, ...data, (...data: any[])=>{
       data.map(element=> console.log(element))
