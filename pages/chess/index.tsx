@@ -25,6 +25,7 @@ const ChessIndex: NextPage = () => {
   }, []);
   const handleJoinRoomButton = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    SocketService.emit("joinGame", room);
   };
 
   const handleRoomInputChange = (event: ChangeEvent<HTMLInputElement>) => {
