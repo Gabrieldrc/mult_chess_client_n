@@ -1,0 +1,34 @@
+.chess_board
+  display: flex
+  flex-direction: column
+  // background-color: gray
+  width: calc(8 * 50px)
+  height: calc(8 * 50px)
+  margin: auto
+  > .row
+    display: flex
+    flex-direction: row
+    // background-color: red
+    width: 100%
+    height: 50px
+    &> .grid
+      display: flex
+      width: 50px
+      height: 50px
+.bc_1
+  background-color: rgb(54, 184, 119)
+.bc_2
+  background-color: rgb(54, 129, 139)
+
+.grid:hover
+  cursor: pointer
+  background-color: rgb(233, 144, 93)
+.bc_hl
+  background-color: rgb(119, 79, 28)
+
+
+  // & > div
+  //   align-content: center
+  //   background-color: aliceblue
+  // &> div > div
+
