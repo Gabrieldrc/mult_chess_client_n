@@ -1,6 +1,7 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import ChatComponent from "../../../components/ChatComponent/ChatComponent";
 import ChessComponent from "../../../components/ChessComponent/ChessComponent";
 import { chessClient } from "../../../core/services/ChessClient";
 import SocketService from "../../../core/services/SocketService";
@@ -43,8 +44,8 @@ const Room: NextPage = () => {
   }, []);
 
   return (
-    <section className="flex-2-col">
-      <section className="full-height">
+    <section className="flex-col full-vheight">
+      <section className="full-height width-70">
         <h1>{`Share your room code: ${room}`}</h1>
         {
         !gameState? '': (
@@ -55,9 +56,7 @@ const Room: NextPage = () => {
         )
         }
       </section>
-      <section className="full-height">
-
-      </section>
+      <ChatComponent/>
     </section>
   );
 };
