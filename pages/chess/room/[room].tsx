@@ -42,20 +42,23 @@ const Room: NextPage = () => {
     }
   }, []);
 
-  // useEffect(()=> {},[gameState]);
-
   return (
-    <>
-      <h1>{`Share your room code: ${room}`}</h1>
-      {
-      !gameState? '': (
-      <>
-        <h2>{`turn: ${gameState.turn}, player: ${player}`}</h2>
-        <ChessComponent board={gameState.board} playerNumber={player} turn={gameState.turn}></ChessComponent>
-      </>
-      )
-      }
-    </>
+    <section className="flex-2-col">
+      <section className="full-height">
+        <h1>{`Share your room code: ${room}`}</h1>
+        {
+        !gameState? '': (
+        <>
+          <h2>{`turn: ${gameState.turn}, player: ${player}`}</h2>
+          <ChessComponent board={gameState.board} playerNumber={player} turn={gameState.turn}></ChessComponent>
+        </>
+        )
+        }
+      </section>
+      <section className="full-height">
+
+      </section>
+    </section>
   );
 };
 

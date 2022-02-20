@@ -42,7 +42,7 @@ const ChessIndex: NextPage = () => {
   };
 
   return (
-    <section className={"full-width full-height flex-center"}>
+    <section className={"full-width full-vheight flex-center"}>
       <FormComponent>
         <input
           type="text"
