@@ -38,6 +38,7 @@ const Room: NextPage = () => {
     });
     return () => {
       SocketService.removeAllListener();
+      localStorage.clear()
     }
   }, []);
 
