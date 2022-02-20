@@ -9,7 +9,7 @@ import SocketService from "../../core/services/SocketService";
 const ChessComponent: NextComponentType = ({ board, playerNumber, turn }) => {
   const PIECE_SRC = "/images/chess_pieces/";
   let chessBoard: Array<Array<PieceInterface>> = board;
-  let player: number = playerNumber;
+  let playerN: number = playerNumber;
   const [boardComponent, setBoardComponent] = useState(<></>);
   let positionSelected: PositionInterface | null = null;
 
@@ -31,7 +31,7 @@ const ChessComponent: NextComponentType = ({ board, playerNumber, turn }) => {
   const clickHandler = (e: Event, i: number, j: number) => {
     e.preventDefault();
     //it cant select if its not its turn
-    if (turn !== player) {
+    if (turn !== playerN) {
       console.log("no es tu turno");
       
       return;
@@ -45,13 +45,13 @@ const ChessComponent: NextComponentType = ({ board, playerNumber, turn }) => {
       return;
     }
 
-    if (!positionSelected && element.player !== player) {
+    if (!positionSelected && element.player !== playerN) {
       console.log("no es tu ficha");
       
       return;
     }
 
-    if (element.player == player) {
+    if (element.player == playerN) {
       positionSelected = { i: i, j: j };
       paintBoard();
       const highlightPositions = chessBoard[i][j].placeCanMove;
@@ -66,7 +66,7 @@ const ChessComponent: NextComponentType = ({ board, playerNumber, turn }) => {
       return;
     }
 
-    if (positionSelected && element.player !== player) {
+    if (positionSelected && element.player !== playerN) {
       const position = chessBoard[positionSelected.i][
         positionSelected.j
       ].placeCanMove.find((position) => position.i == i && position.j == j);
@@ -113,6 +113,7 @@ const ChessComponent: NextComponentType = ({ board, playerNumber, turn }) => {
                   width={50}
                   height={50}
                   key={`${PIECE_SRC}${name}_${player}`}
+                  className={playerN==2? style.rotate: ""}
                 />
               )}
             </div>
@@ -129,7 +130,7 @@ const ChessComponent: NextComponentType = ({ board, playerNumber, turn }) => {
       }, []);
 
       setBoardComponent(
-        <div className={style.chess_board}>{boardContents}</div>
+        <div className={playerN==2? style.chess_board_r : style.chess_board}>{boardContents}</div>
       );
     },
     [board]

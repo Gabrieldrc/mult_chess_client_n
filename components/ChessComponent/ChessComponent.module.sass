@@ -1,4 +1,6 @@
-.chess_board
+.rotate
+  transform: rotate(180deg)
+%chess_board
   display: flex
   flex-direction: column
   // background-color: gray
@@ -15,8 +17,11 @@
       display: flex
       width: 50px
       height: 50px
-.rotate
-  transform: rotate(180deg)
+.chess_board_r
+  @extend %chess_board
+  @extend .rotate
+.chess_board
+  @extend %chess_board
 .bc_1
   background-color: rgb(54, 184, 119)
 .bc_2
