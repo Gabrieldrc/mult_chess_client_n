@@ -1,5 +1,14 @@
-@use 'colors'
+@use 'colors' as c
 @use 'basic'
 @use 'font'
 @use 'form'
 @use 'classes'
+
+*
+  &::-webkit-scrollbar
+      width: 12px
+      background-color: none//c.$primaryColor
+  &::-webkit-scrollbar-thumb
+    border-radius: 10px
+    -webkit-box-shadow: inset 0 0 6px c.$contrastColor2
+    background-color: c.$contrastColor2

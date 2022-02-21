@@ -1,36 +1,82 @@
 import { NextComponentType } from "next";
 import { useEffect, useState } from "react";
+import MessageInterface from "../../core/interfaces/MessageInterface";
 
-import style from "./ChatComponent.module.sass";
+import styleSheet from "./ChatComponent.module.sass";
 
-const MessageComponent: NextComponentType = (props) => {
-  const message: string = props.message;
-  const name: string = props.name;
+const userColors: any[] = [];
+
+const MessageComponent: NextComponentType = ({ name, children, style }) => {
   return (
-    <div>
-      <div>name</div>
-      <div>message</div>
+    <div className={styleSheet.messageComp}>
+      <div>
+        <span
+          style={style}
+        >
+          {name}
+        </span>
+      </div>
+      <p>{children}</p>
     </div>
   );
 };
 
 const ChatComponent: NextComponentType = () => {
-  const [messages, setMessages] = useState([]);
-  const keyPressedHandle = (e) => {
+  const [messages, setMessages] = useState<MessageInterface[]>([]);
+
+  const getUserColorStyle = (name: string) => {
+    let element = userColors.find((ele) => ele.name === name);
+
+    if (!element) {
+      element = {
+        name: name,
+        color: {
+          r: Math.random() * 359,
+          g: Math.random() * (100 - 50) + 50,
+          b: 100,
+        },
+      };
+      userColors.push(element);
+    }
+    
+    return {
+      color: `rgb(${element.color.r}, ${element.color.g}, ${element.color.b})`,
+    }
+  }
+  
+
+  const keyPressedHandle = (e: any) => {
     if (e.code !== "Enter") return;
 
-    console.log("Enter key pressed")
-  }
+    const message: string = e.target.value;
+    setMessages(messages.concat([{ name: "pepito", message: message }]));
+    e.target.value = "";
+    e.preventDefault();
+  };
 
-  useEffect(() => {}, []);
+  const printMessages = () => {
+    return messages.map((messageObj, i) => {
+      const styleObj = getUserColorStyle(messageObj.name);
+      return (
+        <MessageComponent
+          name={messageObj.name}
+          key={`${i}-${messageObj.name}-message`}
+          style={styleObj}
+        >
+          {messageObj.message}
+        </MessageComponent>
+      );
+    });
+  };
+
   return (
-    <section className={style.chat_open}>
-      <section className=""></section>
+    <section className={styleSheet.chat_open}>
+      <section className={styleSheet.message_sect}>{printMessages()}</section>
       <section>
         <textarea
           name="input"
           id="chat_input"
-          className={style.mess_input}
+          className={styleSheet.mess_input}
           onKeyPress={keyPressedHandle}
         ></textarea>
       </section>

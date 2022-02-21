@@ -8,22 +8,33 @@
   padding: 10px
   display: grid
   grid-template-rows: 90% 10%
+.message_sect
+  display: flex
+  flex-direction: column
+  overflow-y: auto
+  overflow-x: hidden
+  width: 100%
+  
 .mess_input
   width: 100%
   height: 100%
   border: none
   padding: 2px
-  &:focus
-    border: 1px solid red
-  &::-webkit-scrollbar
-    width: 12px
-    background-color: c.$primaryColor
-  &::-webkit-scrollbar-thumb
-    border-radius: 10px
-    -webkit-box-shadow: inset 0 0 6px c.$contrastColor2
-    background-color: c.$contrastColor2
-// .messageSection
-//   display: grid
-//   grid-row: 80% 20%
 
-// .inputSection
+%messageComp
+  font-size: 1.6rem
+  max-width: 75%
+  margin: 10px 0
+  width: fit-content
+  & > p
+    color: c.$primaryColor
+    border-radius: 10px
+    padding: 5px 10px
+.messageComp
+  @extend %messageComp
+  &>p
+    background-color: c.$contrastColor
+    
+.selfMessageComp
+  background-color: c.$contrastColor2
+  
