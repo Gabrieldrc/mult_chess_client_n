@@ -15,12 +15,16 @@ const ChessIndex: NextPage = () => {
     SocketService.listen("newGame", (response: WsResponse) => {
       if (response.ok) {
         console.log(`${router.pathname}/room/${response.data.room}`);
-        localStorage.setItem('playerNumber', response.data['playerNumber'])
+        if (response.data['playerNumber']) {
+          localStorage.setItem('playerNumber', response.data['playerNumber'])
+        }
         router.push(`${router.pathname}/room/${response.data.room}`);
       }
     });
     SocketService.listen("error", (res) => {
-      setError(res.data.error)
+      setError(res.data.error.message)
+      console.log(res.data.error);
+      
     })
   }, []);
   const handleJoinRoomButton = (e: MouseEvent<HTMLButtonElement>) => {
@@ -38,7 +42,7 @@ const ChessIndex: NextPage = () => {
   };
 
   return (
-    <section className={"full-width full-height flex-center"}>
+    <section className={"full-width full-vheight flex-center"}>
       <FormComponent>
         <input
           type="text"

@@ -1,0 +1,40 @@
+@use '../../styles/colors' as c
+
+.chat_open
+  height: 100%
+  width: 30%
+  border-radius: 10px
+  border: 5px solid c.$contrastColor
+  padding: 10px
+  display: grid
+  grid-template-rows: 90% 10%
+.message_sect
+  display: flex
+  flex-direction: column
+  overflow-y: auto
+  overflow-x: hidden
+  width: 100%
+  
+.mess_input
+  width: 100%
+  height: 100%
+  border: none
+  padding: 2px
+
+%messageComp
+  font-size: 1.6rem
+  max-width: 75%
+  margin: 10px 0
+  width: fit-content
+  & > p
+    color: c.$primaryColor
+    border-radius: 10px
+    padding: 5px 10px
+.messageComp
+  @extend %messageComp
+  &>p
+    background-color: c.$contrastColor
+    
+.selfMessageComp
+  background-color: c.$contrastColor2
+  
