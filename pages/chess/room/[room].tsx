@@ -1,10 +1,10 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import ChatComponent from "../../../components/ChatComponent/ChatComponent";
-import ChessComponent from "../../../components/ChessComponent/ChessComponent";
-import { chessClient } from "../../../core/services/ChessClient";
-import SocketService from "../../../core/services/SocketService";
+import ChatComponent from "@components/ChatComponent/ChatComponent";
+import ChessComponent from "@components/ChessComponent/ChessComponent";
+import { chessClient } from "@services/ChessClient";
+import SocketService from "@services/SocketService";
 
 const Room: NextPage = () => {
   const router = useRouter();
