@@ -31,9 +31,9 @@ const ChatComponent: NextComponentType = () => {
       element = {
         name: name,
         color: {
-          r: Math.random() * 359,
-          g: Math.random() * (100 - 50) + 50,
-          b: 100,
+          r: 0,
+          g: Math.random() * 255,
+          b: Math.random() * 255,
         },
       };
       userColors.push(element);
