@@ -5,6 +5,7 @@ import ChatComponent from "@components/ChatComponent/ChatComponent";
 import ChessComponent from "@components/ChessComponent/ChessComponent";
 import { chessClient } from "@services/ChessClient";
 import SocketService from "@services/SocketService";
+import RoomCodeComponent from "@components/RoomCodeComponent/RoomCodeComponent";
 
 const Room: NextPage = () => {
   const router = useRouter();
@@ -44,8 +45,9 @@ const Room: NextPage = () => {
   }, []);
 
   return (
-    <section className="flex-col full-vheight">
+    <section className="flex-col full-vheight padding-g">
       <section className="full-height width-70">
+        <RoomCodeComponent roomCode={room}/>
         <h1>{`Share your room code: ${room}`}</h1>
         {
         !gameState? '': (

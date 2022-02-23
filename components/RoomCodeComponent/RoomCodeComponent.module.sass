@@ -1,0 +1,22 @@
+@use "/styles/colors" as c
+
+.container
+  display: flex
+  flex-direction: row
+  height: 2.4rem
+  background-color: blue
+  & > div
+    display: grid
+    cursor: pointer
+    background-color: c.$contrastColor2
+    width: 2.4rem
+    height: 100%
+    justify-content: center
+    align-items: center
+.roomCode
+  margin: auto 1rem 
+  background-color: gray
+  padding: 0 1rem
+  // border-radius: c.$
+.iconContainer
+  border-color: blue
