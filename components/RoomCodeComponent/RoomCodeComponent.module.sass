@@ -1,0 +1,31 @@
+@use "/styles/colors" as c
+@use "/styles/variables" as v
+
+.container
+  display: flex
+  flex-direction: row
+  height: 2.4rem
+.button
+  display: grid
+  cursor: pointer
+  background-color: c.$contrastColor2
+  width: 2.4rem
+  height: 100%
+  justify-content: center
+  align-items: center
+  border-radius: v.$borderRadius
+
+.roomCode
+  margin: auto 1rem
+  color: c.$primaryColor
+  padding: 0 1rem
+  border: none
+  &:focus
+    outline-style: solid
+    outline-color: c.$contrastColor2
+    outline-width: 2px
+.popout
+  font-size: 1.8rem
+  color: white
+  margin: 0 1rem
+  font-style: oblique
