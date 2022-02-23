@@ -6,17 +6,22 @@ import styleSheet from "./ChatComponent.module.sass";
 
 const userColors: any[] = [];
 
-const MessageComponent: NextComponentType = ({ name, children, style }) => {
+const MessageComponent: NextComponentType = ({ name, children, color }) => {
   return (
     <div className={styleSheet.messageComp}>
       <div>
-        <span
-          style={style}
-        >
+        <span className="nametagColor">
           {name}
         </span>
       </div>
       <p>{children}</p>
+      <style jsx>
+      {`
+        .nametagColor {
+          color: hsl(${color.h}deg, ${color.s}%, ${color.l}%)
+        }
+      `}
+      </style>
     </div>
   );
 };
@@ -29,44 +34,40 @@ const ChatComponent: NextComponentType = () => {
     localStorage.getItem("username")
   },[]);
 
-  const getUserColorStyle = (name: string) => {
+  const getUserHSLColorObj = (name: string) => {
     let element = userColors.find((ele) => ele.name === name);
 
     if (!element) {
       element = {
         name: name,
         color: {
-          r: 0,
-          g: Math.random() * 255,
-          b: Math.random() * 255,
+          h: Math.floor(Math.random() * 359),
+          s: 100,
+          l: 50,
         },
       };
       userColors.push(element);
     }
     
-    return {
-      color: `rgb(${element.color.r}, ${element.color.g}, ${element.color.b})`,
-    }
+    return element.color;
   }
-  
 
   const keyPressedHandle = (e: any) => {
     if (e.code !== "Enter") return;
 
     const message: string = e.target.value;
-    setMessages(messages.concat([{ name: "pepito", message: message }]));
+    setMessages(messages.concat([{ name: createName(), message: message }]));
     e.target.value = "";
     e.preventDefault();
   };
 
   const printMessages = () => {
     return messages.map((messageObj, i) => {
-      const styleObj = getUserColorStyle(messageObj.name);
       return (
         <MessageComponent
           name={messageObj.name}
           key={`${i}-${messageObj.name}-message`}
-          style={styleObj}
+          color={getUserHSLColorObj(messageObj.name)}
         >
           {messageObj.message}
         </MessageComponent>
@@ -90,3 +91,15 @@ const ChatComponent: NextComponentType = () => {
 };
 
 export default ChatComponent;
+
+function createName() {
+  const abc = [
+    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "ñ", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
+  ]
+  let name = "";
+  for (let i = 0; i < 7; i++) {
+    name += abc[Math.floor(Math.random() * abc.length)]
+  }
+
+  return name;
+}
