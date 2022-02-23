@@ -1,9 +1,9 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import FormComponent from "../../components/form/FormComponent";
+import FormComponent from "@components/FormComponent/FormComponent";
 import { ChangeEvent, useState, MouseEvent, useEffect } from "react";
-import SocketService from "../../core/services/SocketService";
-import WsResponse from "../../core/interfaces/WsResponse";
+import SocketService from "@services/SocketService";
+import WsResponse from "@interfaces/WsResponse";
 
 const ChessIndex: NextPage = () => {
   const [room, setRoom] = useState("");

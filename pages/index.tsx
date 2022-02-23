@@ -1,5 +1,5 @@
 import type {NextPage} from 'next'
-import DashboardLink from '../components/dashboardLink/DashboardLink'
+import DashboardLink from '@components/DashboardLink/DashboardLink'
 
 const Home: NextPage = () => {
   return (

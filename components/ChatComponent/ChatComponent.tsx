@@ -1,6 +1,6 @@
 import { NextComponentType } from "next";
 import { useEffect, useState } from "react";
-import MessageInterface from "../../core/interfaces/MessageInterface";
+import MessageInterface from "@interfaces/MessageInterface";
 
 import styleSheet from "./ChatComponent.module.sass";
 
@@ -23,6 +23,11 @@ const MessageComponent: NextComponentType = ({ name, children, style }) => {
 
 const ChatComponent: NextComponentType = () => {
   const [messages, setMessages] = useState<MessageInterface[]>([]);
+  const [user, setUser] = useState("");
+
+  useEffect(() => {
+    localStorage.getItem("username")
+  },[]);
 
   const getUserColorStyle = (name: string) => {
     let element = userColors.find((ele) => ele.name === name);

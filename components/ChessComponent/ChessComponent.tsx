@@ -2,9 +2,9 @@ import style from "./ChessComponent.module.sass";
 import { Component, useEffect, useState } from "react";
 import Image from "next/image";
 import { NextComponentType } from "next";
-import PieceInterface from "../../core/interfaces/Piece.interface";
-import PositionInterface from "../../core/interfaces/Position.interface";
-import SocketService from "../../core/services/SocketService";
+import PieceInterface from "@interfaces/Piece.interface";
+import PositionInterface from "@interfaces/Position.interface";
+import SocketService from "@services/SocketService";
 
 const ChessComponent: NextComponentType = ({ board, playerNumber, turn }) => {
   const PIECE_SRC = "/images/chess_pieces/";
