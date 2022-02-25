@@ -28,8 +28,8 @@ const Room: NextPage = () => {
     }
     fetchInitialState();
   }, []);
-  
-  useEffect(()=> {
+
+  useEffect(() => {
     ChessClientWS.listen("gameStateUpdate", (response: any) => {
       if (response.ok) {
         const data = response.data;
@@ -39,31 +39,35 @@ const Room: NextPage = () => {
     });
 
     ChessClientWS.listen("error", (response: any) => {
-      console.error('Error socket', response.error)
+      console.error("Error socket", response.error);
     });
     return () => {
       ChessClientWS.removeAllListener();
-      localStorage.clear()
-    }
+      localStorage.clear();
+    };
   }, []);
 
   return (
     <section className={style.page_section}>
       <section className={style.main_section}>
-        <RoomCodeComponent roomCode={room}/>
+        <RoomCodeComponent roomCode={room} />
         <div className={style.center_content}>
           {/* <LoadingComponent/> */}
-          {
-            !gameState? 'loading...': (
+          {!gameState ? (
+            "loading..."
+          ) : (
             <div className={style.game_area}>
               <h2>{`turn: ${gameState.turn}, player: ${player}`}</h2>
-              <ChessComponent board={gameState.board} playerNumber={player} turn={gameState.turn}></ChessComponent>
+              <ChessComponent
+                board={gameState.board}
+                playerNumber={player}
+                turn={gameState.turn}
+              ></ChessComponent>
             </div>
-            )
-          }
+          )}
         </div>
       </section>
-      <ChatComponent/>
+      <ChatComponent />
     </section>
   );
 };
