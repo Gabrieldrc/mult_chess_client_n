@@ -2,9 +2,9 @@ import { Socket, io } from 'socket.io-client'
 const SOCKET_URI = 'http://localhost:3001'
 export default class SocketService {
   static _singleton: Socket | undefined = undefined
-  static getSocket(): Socket {
+  static getSocket(option: any = {}): Socket {
     if (this._singleton == undefined) {
-      this._singleton = io(SOCKET_URI, {transports: ['websocket']});
+      this._singleton = io(SOCKET_URI, {transports: ['websocket'], ...option});
     }
     return this._singleton
   }

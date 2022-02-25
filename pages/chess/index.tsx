@@ -4,6 +4,7 @@ import FormComponent from "@components/FormComponent/FormComponent";
 import { ChangeEvent, useState, MouseEvent, useEffect } from "react";
 import SocketService from "@services/SocketService";
 import WsResponse from "@interfaces/WsResponse";
+import ChessClientWS from "@services/ChessClientWS";
 
 const ChessIndex: NextPage = () => {
   const [room, setRoom] = useState("");
@@ -11,8 +12,8 @@ const ChessIndex: NextPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    SocketService.listen("connect", () => console.log("connected"));
-    SocketService.listen("newGame", (response: WsResponse) => {
+    ChessClientWS.listen("connect", () => console.log("connected"));
+    ChessClientWS.listen("newGame", (response: WsResponse) => {
       if (response.ok) {
         console.log(`${router.pathname}/room/${response.data.room}`);
         if (response.data['playerNumber']) {
@@ -21,7 +22,7 @@ const ChessIndex: NextPage = () => {
         router.push(`${router.pathname}/room/${response.data.room}`);
       }
     });
-    SocketService.listen("error", (res) => {
+    ChessClientWS.listen("error", (res) => {
       setError(res.data.error.message)
       console.log(res.data.error);
       
@@ -29,7 +30,7 @@ const ChessIndex: NextPage = () => {
   }, []);
   const handleJoinRoomButton = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    SocketService.emit("joinGame", room);
+    ChessClientWS.emit("joinGame", room);
   };
 
   const handleRoomInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +39,7 @@ const ChessIndex: NextPage = () => {
 
   const handleNewGameButton = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    SocketService.emit("newGame");
+    ChessClientWS.emit("newGame");
   };
 
   return (

@@ -6,6 +6,7 @@ import ChessComponent from "@components/ChessComponent/ChessComponent";
 import { chessClient } from "@services/ChessClient";
 import SocketService from "@services/SocketService";
 import RoomCodeComponent from "@components/RoomCodeComponent/RoomCodeComponent";
+import ChessClientWS from "@services/ChessClientWS";
 
 const Room: NextPage = () => {
   const router = useRouter();
@@ -27,7 +28,7 @@ const Room: NextPage = () => {
   }, []);
   
   useEffect(()=> {
-    SocketService.listen("gameStateUpdate", (response: any) => {
+    ChessClientWS.listen("gameStateUpdate", (response: any) => {
       if (response.ok) {
         const data = response.data;
 
@@ -35,11 +36,11 @@ const Room: NextPage = () => {
       }
     });
 
-    SocketService.listen("error", (response: any) => {
+    ChessClientWS.listen("error", (response: any) => {
       console.error('Error socket', response.error)
     });
     return () => {
-      SocketService.removeAllListener();
+      ChessClientWS.removeAllListener();
       localStorage.clear()
     }
   }, []);
