@@ -7,6 +7,8 @@ import { chessClient } from "@services/ChessClient";
 import SocketService from "@services/SocketService";
 import RoomCodeComponent from "@components/RoomCodeComponent/RoomCodeComponent";
 import ChessClientWS from "@services/ChessClientWS";
+import style from "./room.module.sass";
+import LoadingComponent from "@components/LoadingComponent/LoadingComponent";
 
 const Room: NextPage = () => {
   const router = useRouter();
@@ -46,18 +48,20 @@ const Room: NextPage = () => {
   }, []);
 
   return (
-    <section className="flex-col full-vheight padding-g">
-      <section className="full-height width-70">
+    <section className={style.page_section}>
+      <section className={style.main_section}>
         <RoomCodeComponent roomCode={room}/>
-        <h1>{`Share your room code: ${room}`}</h1>
-        {
-        !gameState? '': (
-        <>
-          <h2>{`turn: ${gameState.turn}, player: ${player}`}</h2>
-          <ChessComponent board={gameState.board} playerNumber={player} turn={gameState.turn}></ChessComponent>
-        </>
-        )
-        }
+        <div className={style.center_content}>
+          {/* <LoadingComponent/> */}
+          {
+            !gameState? 'loading...': (
+            <div className={style.game_area}>
+              <h2>{`turn: ${gameState.turn}, player: ${player}`}</h2>
+              <ChessComponent board={gameState.board} playerNumber={player} turn={gameState.turn}></ChessComponent>
+            </div>
+            )
+          }
+        </div>
       </section>
       <ChatComponent/>
     </section>
