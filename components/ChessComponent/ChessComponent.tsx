@@ -3,15 +3,15 @@ import { Component, useEffect, useState } from "react";
 import Image from "next/image";
 import { NextComponentType } from "next";
 import PieceInterface from "@interfaces/Piece.interface";
-import PositionInterface from "@interfaces/Position.interface";
-import SocketService from "@services/SocketService";
+import IPosition from "@interfaces/Position.interface";
+import ChessClientWS from "@services/ChessClientWS";
 
 const ChessComponent: NextComponentType = ({ board, playerNumber, turn }) => {
   const PIECE_SRC = "/images/chess_pieces/";
   let chessBoard: Array<Array<PieceInterface>> = board;
   let playerN: number = playerNumber;
   const [boardComponent, setBoardComponent] = useState(<></>);
-  let positionSelected: PositionInterface | null = null;
+  let positionSelected: IPosition | null = null;
 
   const paintBoard = () => {
     let flagRow = true;
@@ -80,10 +80,7 @@ const ChessComponent: NextComponentType = ({ board, playerNumber, turn }) => {
         to: position,
       });
       
-      SocketService.emit("play", {
-        from: positionSelected,
-        to: position,
-      });
+      ChessClientWS.emitPlay( positionSelected, position);
       positionSelected = null;
     }
   };

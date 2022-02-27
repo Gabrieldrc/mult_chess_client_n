@@ -12,8 +12,8 @@ const ChessIndex: NextPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    ChessClientWS.listen("connect", () => console.log("connected"));
-    ChessClientWS.listen("newGame", (response: WsResponse) => {
+    ChessClientWS.connectListener( () => console.log("connected"));
+    ChessClientWS.newGameListener( (response: WsResponse) => {
       if (response.ok) {
         console.log(`${router.pathname}/room/${response.data.room}`);
         if (response.data['playerNumber']) {
@@ -22,7 +22,7 @@ const ChessIndex: NextPage = () => {
         router.push(`${router.pathname}/room/${response.data.room}`);
       }
     });
-    ChessClientWS.listen("error", (res) => {
+    ChessClientWS.ErrorListener( (res) => {
       setError(res.data.error.message)
       console.log(res.data.error);
       
@@ -30,7 +30,7 @@ const ChessIndex: NextPage = () => {
   }, []);
   const handleJoinRoomButton = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    ChessClientWS.emit("joinGame", room);
+    ChessClientWS.emitJoinGame( room);
   };
 
   const handleRoomInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -39,7 +39,7 @@ const ChessIndex: NextPage = () => {
 
   const handleNewGameButton = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    ChessClientWS.emit("newGame");
+    ChessClientWS.emitNewGame();
   };
 
   return (

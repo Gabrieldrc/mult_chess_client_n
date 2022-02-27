@@ -1,4 +1,4 @@
-export default interface PositionInterface {
+export default interface IPosition {
     i: number,
     j: number,
 }

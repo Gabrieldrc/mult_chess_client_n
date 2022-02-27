@@ -9,16 +9,18 @@ import RoomCodeComponent from "@components/RoomCodeComponent/RoomCodeComponent";
 import ChessClientWS from "@services/ChessClientWS";
 import style from "./room.module.sass";
 import LoadingComponent from "@components/LoadingComponent/LoadingComponent";
+import ChatClientWS from "@services/ChatClientWS";
 
 const Room: NextPage = () => {
   const router = useRouter();
-  const { room } = router.query;
+  const  room: string  = router.query.room;
+  
   const player = +localStorage.getItem("playerNumber");
   const [gameState, setGameState] = useState<any | null>(null);
 
   useEffect(() => {
     async function fetchInitialState() {
-      const resp = await chessClient.getState(`${room}`);
+      const resp = await chessClient.getState(room);
       if (resp.status == 200) {
         setGameState({
           turn: resp.data["response"]["turn"],
@@ -30,7 +32,9 @@ const Room: NextPage = () => {
   }, []);
 
   useEffect(() => {
-    ChessClientWS.listen("gameStateUpdate", (response: any) => {
+    ChatClientWS.connectHandler(() => console.log("connected Chat"));
+    ChatClientWS.joinChatRoom(room);
+    ChessClientWS.gameStateUpdateListener((response: any) => {
       if (response.ok) {
         const data = response.data;
 
@@ -38,7 +42,7 @@ const Room: NextPage = () => {
       }
     });
 
-    ChessClientWS.listen("error", (response: any) => {
+    ChessClientWS.ErrorListener((response: any) => {
       console.error("Error socket", response.error);
     });
     return () => {
