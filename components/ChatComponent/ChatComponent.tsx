@@ -42,14 +42,13 @@ const ChatComponent: NextComponentType = () => {
   useEffect(() => {
     ChatClientWS.newMessageHandler((message) => {
       messages.push(message)
+      console.log(messages);
+      
       setFlag(flag? false: true);
+      const elements = printMessages();
+      setMessagesComp(elements)
     });
   }, []);
-
-  useEffect(() => {
-    const elements = printMessages();
-    setMessagesComp(elements)
-  }, [flag]);
 
   const getUserHSLColorObj = (name: string) => {
     let element = userColors.find((ele) => ele.name === name);
