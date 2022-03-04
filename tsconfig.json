@@ -19,6 +19,7 @@
       "@components/*": ["components/*"],
       "@services/*": ["core/services/*"],
       "@interfaces/*": ["core/interfaces/*"],
+      "@appRedux/*": ["core/redux/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
