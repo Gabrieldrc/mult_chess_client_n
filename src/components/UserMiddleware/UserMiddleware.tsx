@@ -1,6 +1,4 @@
-import { useAppDispatch, useAppSelector } from "@appRedux/hooks";
 import { NextPage } from "next";
-import { useRouter } from "next/router";
 
 const UserMiddleware: NextPage = (props) => {
   // const router = useRouter();

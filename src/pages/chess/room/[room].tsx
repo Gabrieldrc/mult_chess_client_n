@@ -1,24 +1,20 @@
-import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ChatComponent from "@components/ChatComponent/ChatComponent";
 import ChessComponent from "@components/ChessComponent/ChessComponent";
 import { chessClient } from "@services/ChessClient";
-import SocketService from "@services/SocketService";
 import RoomCodeComponent from "@components/RoomCodeComponent/RoomCodeComponent";
 import ChessClientWS from "@services/ChessClientWS";
 import style from "./room.module.sass";
-import LoadingComponent from "@components/LoadingComponent/LoadingComponent";
 import ChatClientWS from "@services/ChatClientWS";
-import { useAppDispatch } from "@appRedux/hooks";
-import { cleanMessages } from "@appRedux/features/roomMessagesSlice";
+import { useAppSelector } from "@appRedux/hooks";
+import WsResponse from "@interfaces/WsResponse";
+import WSResError from "@interfaces/WSError";
 
 function Room() {
   const router = useRouter();
   const room: string = router.query.room;
-  const dispatch = useAppDispatch();
-
-  const player = +localStorage.getItem("playerNumber");
+  const player = useAppSelector((state) => state.player.playerNumber);
   const [gameState, setGameState] = useState<object | null>(null);
 
   useEffect(() => {
@@ -37,7 +33,7 @@ function Room() {
   useEffect(() => {
     ChatClientWS.connectHandler(() => console.log("connected Chat"));
     ChatClientWS.joinChatRoom(room);
-    ChessClientWS.gameStateUpdateListener((response: any) => {
+    ChessClientWS.gameStateUpdateListener((response: WsResponse) => {
       if (response.ok) {
         const data = response.data;
 
@@ -45,13 +41,11 @@ function Room() {
       }
     });
 
-    ChessClientWS.ErrorListener((response: any) => {
+    ChessClientWS.ErrorListener((response: WSResError) => {
       console.error("Error socket", response.error);
     });
     return () => {
       ChessClientWS.removeAllListener();
-      dispatch(cleanMessages());
-      localStorage.clear();
     };
   }, [room]);
 

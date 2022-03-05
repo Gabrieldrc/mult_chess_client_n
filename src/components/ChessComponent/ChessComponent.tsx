@@ -1,5 +1,5 @@
 import style from "./ChessComponent.module.sass";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import PieceInterface from "@interfaces/Piece.interface";
 import IPosition from "@interfaces/Position.interface";
@@ -16,7 +16,7 @@ function ChessComponent({ board, playerNumber, turn }: ChessProps) {
   const [boardComponent, setBoardComponent] = useState(<></>);
   let positionSelected: IPosition | null = null;
 
-  function paintBoard() {
+  const paintBoard = useCallback(() => {
     let flagRow = true;
     board.map((col, i) => {
       let flagCol = flagRow;
@@ -28,7 +28,7 @@ function ChessComponent({ board, playerNumber, turn }: ChessProps) {
       });
       flagRow = !flagRow;
     });
-  }
+  }, [board]);
 
   function clickHandler(e: Event, i: number, j: number) {
     e.preventDefault();
@@ -64,7 +64,6 @@ function ChessComponent({ board, playerNumber, turn }: ChessProps) {
         htmlElement?.className = `${style.grid} ${style.bc_hl}`;
       });
 
-      console.log("seleccionaste una ficha");
       return;
     }
 
@@ -89,10 +88,10 @@ function ChessComponent({ board, playerNumber, turn }: ChessProps) {
 
   useEffect(
     function createBoard() {
-      const boardContents: any[] = [];
+      const boardContents: JSX.Element[] = [];
 
       board.map((col, i) => {
-        const rowHtml: any[] = [];
+        const rowHtml: JSX.Element[] = [];
 
         col.map((elemtent, j) => {
           const { name, player } = elemtent;
@@ -146,7 +145,7 @@ function ChessComponent({ board, playerNumber, turn }: ChessProps) {
     function initPaintBoard() {
       paintBoard();
     },
-    [boardComponent]
+    [boardComponent, paintBoard]
   );
 
   return <>{boardComponent}</>;
