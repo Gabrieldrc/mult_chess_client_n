@@ -5,7 +5,8 @@ import { useRouter } from "next/router";
 import IMessage from "@interfaces/IMessage";
 import HSLColor from "@interfaces/HSLColor.interface";
 
-const userColors: any[] = [];
+type UserColors = { name: string; color: HSLColor };
+const userColors: UserColors[] = [];
 
 function ChatComponent() {
   const room = `${useRouter().query.room}`;
@@ -52,7 +53,7 @@ function ChatComponent() {
     return element.color;
   }
 
-  function keyPressedHandle(e: any) {
+  function keyPressedHandle(e: Event) {
     if (e.code !== "Enter") return;
     if (e.target.value.length == 0) return;
 

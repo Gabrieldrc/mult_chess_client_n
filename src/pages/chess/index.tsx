@@ -1,14 +1,16 @@
-import { NextPage } from "next";
 import { useRouter } from "next/router";
 import FormComponent from "@components/FormComponent/FormComponent";
 import { ChangeEvent, useState, MouseEvent, useEffect } from "react";
 import WsResponse from "@interfaces/WsResponse";
 import ChessClientWS from "@services/ChessClientWS";
+import { useAppDispatch } from "@appRedux/hooks";
+import { setPlayerNumber } from "@appRedux/features/playerSlice";
 
 function ChessIndex() {
   const [room, setRoom] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     ChessClientWS.connectListener(() => console.log("connected"));
@@ -16,7 +18,7 @@ function ChessIndex() {
       if (response.ok) {
         console.log(`${router.pathname}/room/${response.data.room}`);
         if (response.data["playerNumber"]) {
-          localStorage.setItem("playerNumber", response.data["playerNumber"]);
+          dispatch(setPlayerNumber(response.data["playerNumber"]));
         }
         router.push(`${router.pathname}/room/${response.data.room}`);
       }
@@ -25,7 +27,7 @@ function ChessIndex() {
       setError(res.data.error.message);
       console.log(res.data.error);
     });
-  }, [router]);
+  }, [dispatch, router]);
 
   function handleJoinRoomButton(e: MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
