@@ -1,30 +1,14 @@
-import { ReactNode, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styleSheet from "./ChatComponent.module.sass";
 import ChatClientWS from "@services/ChatClientWS";
 import { useRouter } from "next/router";
 import IMessage from "@interfaces/IMessage";
-import HSLColor from "@interfaces/HSLColor.interface";
-
-type UserColors = { name: string; color: HSLColor };
-const userColors: UserColors[] = [];
+import MessagesPrintComponent from "./MessagesPrintComponent";
 
 function ChatComponent() {
   const room = `${useRouter().query.room}`;
   const [messages, setMessages] = useState<IMessage[]>([]);
-
-  function printMessages(msgs: IMessage[]) {
-    return msgs.map((messageObj, i) => {
-      return (
-        <MessageComponent
-          name={messageObj.name}
-          key={`${i}-${messageObj.name}-message`}
-          color={getUserHSLColorObj(messageObj.name)}
-        >
-          {messageObj.message}
-        </MessageComponent>
-      );
-    });
-  }
+  const messageInputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     ChatClientWS.newMessageHandler((message) => {
@@ -35,38 +19,27 @@ function ChatComponent() {
     };
   }, [messages]);
 
-  function getUserHSLColorObj(name: string) {
-    let element = userColors.find((ele) => ele.name === name);
-
-    if (!element) {
-      element = {
-        name: name,
-        color: {
-          h: Math.floor(Math.random() * 359),
-          s: 100,
-          l: 50,
-        },
-      };
-      userColors.push(element);
-    }
-
-    return element.color;
-  }
-
-  function keyPressedHandle(e: Event) {
-    if (e.code !== "Enter") return;
-    if (e.target.value.length == 0) return;
-
-    const message = { name: createName(), message: e.target.value };
+  const sendMessage = useCallback(() => {
+    const message = {
+      name: createName(),
+      message: messageInputRef.current?.value + "",
+    };
     ChatClientWS.sendMessage(room, message);
-    e.target.value = "";
+  }, [room]);
+
+  const keyPressedHandle = useCallback((e: KeyboardEvent) => {
+    console.log(messageInputRef.current?.value);
+    if (e.code !== "Enter") return;
+    if (messageInputRef.current?.value.length == 0) return;
+    sendMessage();
+    messageInputRef.current?.value = "";
     e.preventDefault();
-  }
+  }, []);
 
   return (
     <section className={styleSheet.chat_open}>
       <section className={styleSheet.message_sect}>
-        {printMessages(messages)}
+        <MessagesPrintComponent messages={messages}/>
       </section>
       <section>
         <textarea
@@ -74,33 +47,10 @@ function ChatComponent() {
           id="chat_input"
           className={styleSheet.mess_input}
           onKeyPress={keyPressedHandle}
+          ref={messageInputRef}
         ></textarea>
       </section>
     </section>
-  );
-}
-
-type MessageProps = {
-  name: string;
-  color: HSLColor;
-  children: ReactNode;
-};
-
-function MessageComponent({ name, children, color }: MessageProps) {
-  return (
-    <div className={styleSheet.messageComp}>
-      <div>
-        <span className="nametagColor">{name}</span>
-      </div>
-      <p>{children}</p>
-      <style jsx>
-        {`
-          .nametagColor {
-            color: hsl(${color.h}deg, ${color.s}%, ${color.l}%);
-          }
-        `}
-      </style>
-    </div>
   );
 }
 
