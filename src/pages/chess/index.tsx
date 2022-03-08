@@ -1,13 +1,13 @@
 import { useRouter } from "next/router";
 import FormComponent from "@components/FormComponent/FormComponent";
-import { ChangeEvent, useState, MouseEvent, useEffect } from "react";
+import { ChangeEvent, useState, MouseEvent, useEffect, useRef } from "react";
 import WsResponse from "@interfaces/WsResponse";
 import ChessClientWS from "@services/ChessClientWS";
 import { useAppDispatch } from "@appRedux/hooks";
 import { setPlayerNumber } from "@appRedux/features/playerSlice";
 
 function ChessIndex() {
-  const [room, setRoom] = useState("");
+  const room = useRef<HTMLInputElement>();
   const [error, setError] = useState("");
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -31,11 +31,7 @@ function ChessIndex() {
 
   function handleJoinRoomButton(e: MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    ChessClientWS.emitJoinGame(room);
-  }
-
-  function handleRoomInputChange(event: ChangeEvent<HTMLInputElement>) {
-    setRoom(event.target.value);
+    ChessClientWS.emitJoinGame(`${room.current?.value}`);
   }
 
   function handleNewGameButton(e: MouseEvent<HTMLButtonElement>) {
@@ -46,11 +42,7 @@ function ChessIndex() {
   return (
     <section className={"full-width full-vheight flex-center"}>
       <FormComponent>
-        <input
-          type="text"
-          placeholder="Room"
-          onChange={(event) => handleRoomInputChange(event)}
-        />
+        <input type="text" placeholder="Room" ref={room} />
         <button onClick={(event) => handleJoinRoomButton(event)}>
           Join Room
         </button>
@@ -58,13 +50,11 @@ function ChessIndex() {
         <button onClick={(event) => handleNewGameButton(event)}>
           New Game
         </button>
-        {error ? (
+        {error && (
           <span className={"error-form"}>
             <b>Error:</b>
             {error}
           </span>
-        ) : (
-          ""
         )}
       </FormComponent>
     </section>
