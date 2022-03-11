@@ -4,27 +4,20 @@ import ChatClientWS from "@services/ChatClientWS";
 import { useRouter } from "next/router";
 import IMessage from "@interfaces/IMessage";
 import MessagesPrintComponent from "./MessagesPrintComponent";
+import { useMessageListener } from "core/hooks/useMessageListener";
 
 function ChatComponent() {
   const room = `${useRouter().query.room}`;
-  const [messages, setMessages] = useState<IMessage[]>([]);
+  const { messages, sendMessageAction } = useMessageListener();
+  const send = sendMessageAction(room);
   const messageInputRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    ChatClientWS.newMessageHandler((message) => {
-      setMessages([...messages, message]);
-    });
-    return () => {
-      ChatClientWS.removeNewMessageHandler();
-    };
-  }, [messages]);
 
   const sendMessage = useCallback(() => {
     const message = {
       name: createName(),
       message: messageInputRef.current?.value + "",
     };
-    ChatClientWS.sendMessage(room, message);
+    send(message);
   }, [room]);
 
   const keyPressedHandle = useCallback((e: KeyboardEvent) => {
@@ -39,7 +32,7 @@ function ChatComponent() {
   return (
     <section className={styleSheet.chat_open}>
       <section className={styleSheet.message_sect}>
-        <MessagesPrintComponent messages={messages}/>
+        <MessagesPrintComponent messages={messages} />
       </section>
       <section>
         <textarea

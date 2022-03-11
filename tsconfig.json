@@ -20,6 +20,7 @@
       "@services/*": ["core/services/*"],
       "@interfaces/*": ["core/interfaces/*"],
       "@appRedux/*": ["core/redux/*"],
+      "@hooks/*": ["core/hooks/*"],
       "@styles/*": ["styles/*"]
     }
   },
