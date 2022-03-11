@@ -1,21 +1,22 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ChatComponent from "@components/ChatComponent/ChatComponent";
 import ChessComponent from "@components/ChessComponent/ChessComponent";
 import { chessClient } from "@services/ChessClient";
 import RoomCodeComponent from "@components/RoomCodeComponent/RoomCodeComponent";
 import ChessClientWS from "@services/ChessClientWS";
 import style from "./room.module.sass";
-import ChatClientWS from "@services/ChatClientWS";
 import { useAppSelector } from "@appRedux/hooks";
 import WsResponse from "@interfaces/WsResponse";
 import WSResError from "@interfaces/WSError";
+import { useChatClientWS } from "@hooks/useChatClientWS";
 
 function Room() {
   const router = useRouter();
   const room: string = router.query.room;
   const player = useAppSelector((state) => state.player.playerNumber);
   const [gameState, setGameState] = useState<object | null>(null);
+  const chatClientWS = useRef(useChatClientWS());
 
   useEffect(() => {
     async function fetchInitialState() {
@@ -31,8 +32,8 @@ function Room() {
   }, [room]);
 
   useEffect(() => {
-    ChatClientWS.connectHandler(() => console.log("connected Chat"));
-    ChatClientWS.joinChatRoom(room);
+    chatClientWS.current.connectHandler(() => console.log("connected Chat"));
+    chatClientWS.current.joinChatRoom(room);
     ChessClientWS.gameStateUpdateListener((response: WsResponse) => {
       if (response.ok) {
         const data = response.data;

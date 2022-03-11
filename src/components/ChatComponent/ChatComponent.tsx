@@ -1,8 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 import styleSheet from "./ChatComponent.module.sass";
-import ChatClientWS from "@services/ChatClientWS";
 import { useRouter } from "next/router";
-import IMessage from "@interfaces/IMessage";
 import MessagesPrintComponent from "./MessagesPrintComponent";
 import { useMessageListener } from "core/hooks/useMessageListener";
 

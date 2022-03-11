@@ -1,21 +1,23 @@
 import IMessage from "@interfaces/IMessage";
-import ChatClientWS from "@services/ChatClientWS";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useChatClientWS } from "./useChatClientWS";
 
 export const useMessageListener = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
+  const chatSocketClient = useRef(useChatClientWS());
 
   useEffect(() => {
-    ChatClientWS.newMessageHandler((message) => {
+    const clientToCleanUp = chatSocketClient.current;
+    chatSocketClient.current.newMessageHandler((message) => {
       setMessages([...messages, message]);
     });
     return () => {
-      ChatClientWS.removeNewMessageHandler();
+      clientToCleanUp.removeNewMessageHandler();
     };
   }, [messages]);
 
   const sendMessageAction = (room: string) => (message: IMessage) =>
-    ChatClientWS.sendMessage(room, message);
+    chatSocketClient.current.sendMessage(room, message);
 
   return {
     messages,

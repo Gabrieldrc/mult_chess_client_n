@@ -5,9 +5,9 @@ import { Socket } from "socket.io-client";
 import SocketServiceImpl from "./SocketServiceImpl";
 
 export default class ChatClientWS {
-  static _singleton: SocketService | undefined = undefined;
+  private _singleton: SocketService | undefined = undefined;
 
-  static getSocketService() {
+  private getSocketService() {
     if (!this._singleton) {
       this._singleton = new SocketServiceImpl();
       this._singleton.setNamespace("/service/chat/");
@@ -16,40 +16,40 @@ export default class ChatClientWS {
     return this._singleton;
   }
   //---listeners
-  static connectHandler(callback: (...arg: any[]) => void): void {
+  connectHandler(callback: (...arg: any[]) => void): void {
     this.getSocketService().listen("connect", callback);
   }
 
-  static newMessageHandler(callback: (...arg: any[]) => void): void {
+  newMessageHandler(callback: (...arg: any[]) => void): void {
     this.getSocketService().listen("message", callback);
   }
 
   //---emitters
-  static sendMessage(room: string, message: IMessage): void {
+  sendMessage(room: string, message: IMessage): void {
     this.getSocketService().emit("message", room, message);
   }
 
-  static joinChatRoom(room: string): void {
+  joinChatRoom(room: string): void {
     this.getSocketService().emit("joinRoom", room);
   }
 
-  static removeAllListener(): void {
+  removeAllListener(): void {
     this.getSocketService().removeAllListener();
   }
 
-  static removeNewMessageHandler(): void {
+  removeNewMessageHandler(): void {
     this.getSocketService().removeListener("message");
   }
 
-  static disconnect(): void {
+  disconnect(): void {
     this.getSocketService().disconnect();
   }
 
-  static getOptions() {
+  getOptions() {
     return this.getSocketService().getOptions();
   }
 
-  static setOptions(options: Partial<ManagerOptions & SocketOptions>): void {
+  setOptions(options: Partial<ManagerOptions & SocketOptions>): void {
     this.getSocketService().setOptions(options);
   }
 }
