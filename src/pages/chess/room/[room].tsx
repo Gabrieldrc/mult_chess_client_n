@@ -10,6 +10,7 @@ import { useAppSelector } from "@appRedux/hooks";
 import WsResponse from "@interfaces/WsResponse";
 import WSResError from "@interfaces/WSError";
 import { useChatClientWS } from "@hooks/useChatClientWS";
+import { useChessClientWS } from "@hooks/useChessClientWS";
 
 function Room() {
   const router = useRouter();
@@ -17,6 +18,7 @@ function Room() {
   const player = useAppSelector((state) => state.player.playerNumber);
   const [gameState, setGameState] = useState<object | null>(null);
   const chatClientWS = useRef(useChatClientWS());
+  const chessClientWS = useRef(useChessClientWS());
 
   useEffect(() => {
     async function fetchInitialState() {
@@ -32,9 +34,10 @@ function Room() {
   }, [room]);
 
   useEffect(() => {
+    const toCleanChess = chessClientWS.current;
     chatClientWS.current.connectHandler(() => console.log("connected Chat"));
     chatClientWS.current.joinChatRoom(room);
-    ChessClientWS.gameStateUpdateListener((response: WsResponse) => {
+    chessClientWS.current.gameStateUpdateListener((response: WsResponse) => {
       if (response.ok) {
         const data = response.data;
 
@@ -42,11 +45,11 @@ function Room() {
       }
     });
 
-    ChessClientWS.ErrorListener((response: WSResError) => {
+    chessClientWS.current.ErrorListener((response: WSResError) => {
       console.error("Error socket", response.error);
     });
     return () => {
-      ChessClientWS.removeAllListener();
+      toCleanChess.removeAllListener();
     };
   }, [room]);
 

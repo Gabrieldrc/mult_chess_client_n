@@ -1,13 +1,11 @@
 import IMessage from "@interfaces/IMessage";
 import SocketService from "@interfaces/SocketService";
-import { DefaultEventsMap } from "@socket.io/component-emitter";
-import { Socket } from "socket.io-client";
 import SocketServiceImpl from "./SocketServiceImpl";
 
 export default class ChatClientWS {
-  private _singleton: SocketService | undefined = undefined;
+  static _singleton: SocketService | undefined = undefined;
 
-  private getSocketService() {
+  static getSocketService() {
     if (!this._singleton) {
       this._singleton = new SocketServiceImpl();
       this._singleton.setNamespace("/service/chat/");
@@ -16,40 +14,40 @@ export default class ChatClientWS {
     return this._singleton;
   }
   //---listeners
-  connectHandler(callback: (...arg: any[]) => void): void {
+  static connectHandler(callback: (...arg: any[]) => void): void {
     this.getSocketService().listen("connect", callback);
   }
 
-  newMessageHandler(callback: (...arg: any[]) => void): void {
+  static newMessageHandler(callback: (...arg: any[]) => void): void {
     this.getSocketService().listen("message", callback);
   }
 
   //---emitters
-  sendMessage(room: string, message: IMessage): void {
+  static sendMessage(room: string, message: IMessage): void {
     this.getSocketService().emit("message", room, message);
   }
 
-  joinChatRoom(room: string): void {
+  static joinChatRoom(room: string): void {
     this.getSocketService().emit("joinRoom", room);
   }
 
-  removeAllListener(): void {
+  static removeAllListener(): void {
     this.getSocketService().removeAllListener();
   }
 
-  removeNewMessageHandler(): void {
+  static removeNewMessageHandler(): void {
     this.getSocketService().removeListener("message");
   }
 
-  disconnect(): void {
+  static disconnect(): void {
     this.getSocketService().disconnect();
   }
 
-  getOptions() {
+  static getOptions() {
     return this.getSocketService().getOptions();
   }
 
-  setOptions(options: Partial<ManagerOptions & SocketOptions>): void {
+  static setOptions(options: Partial<ManagerOptions & SocketOptions>): void {
     this.getSocketService().setOptions(options);
   }
 }

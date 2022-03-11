@@ -1,9 +1,9 @@
 import style from "./ChessComponent.module.sass";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import PieceInterface from "@interfaces/Piece.interface";
 import IPosition from "@interfaces/Position.interface";
-import ChessClientWS from "@services/ChessClientWS";
+import { useChessClientWS } from "@hooks/useChessClientWS";
 
 type ChessProps = {
   board: PieceInterface[][];
@@ -15,6 +15,7 @@ function ChessComponent({ board, playerNumber, turn }: ChessProps) {
   const PIECE_SRC = "/images/chess_pieces/";
   const [boardComponent, setBoardComponent] = useState(<></>);
   let positionSelected: IPosition | null = null;
+  const chessClientWS = useRef(useChessClientWS());
 
   const paintBoard = useCallback(() => {
     let flagRow = true;
@@ -81,7 +82,11 @@ function ChessComponent({ board, playerNumber, turn }: ChessProps) {
         to: position,
       });
 
-      ChessClientWS.emitPlay(positionSelected, position);
+      try {
+        chessClientWS.current.emitPlay(positionSelected, position);
+      } catch (e) {
+        console.debug(e);
+      }
       positionSelected = null;
     }
   }

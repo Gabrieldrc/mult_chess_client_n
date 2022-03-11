@@ -59,7 +59,7 @@ export default class ChessClientWS {
     return this.getSocketService().getOptions();
   }
 
-  static setOptions(options: Partial<ManagerOptions & SocketOptions>): void {
+  setOptions(options: Partial<ManagerOptions & SocketOptions>): void {
     this.getSocketService().setOptions(options);
   }
 }
