@@ -1,4 +1,4 @@
-import DashboardLink from "@components/DashboardLink/DashboardLink";
+import DashboardLink from "@components/DashboardLink";
 
 function Home() {
   return (

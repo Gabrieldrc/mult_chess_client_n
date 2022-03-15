@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import PieceInterface from "@interfaces/Piece.interface";
 import IPosition from "@interfaces/Position.interface";
-import ChessClientWS from "@services/ChessClientWS";
+import { emitPlay } from "@services/chess/socketClient";
 
 type ChessProps = {
   board: PieceInterface[][];
@@ -76,12 +76,12 @@ function ChessComponent({ board, playerNumber, turn }: ChessProps) {
 
         return;
       }
-      console.log("play", {
-        from: positionSelected,
-        to: position,
-      });
 
-      ChessClientWS.emitPlay(positionSelected, position);
+      try {
+        emitPlay(positionSelected, position);
+      } catch (e) {
+        console.debug(e);
+      }
       positionSelected = null;
     }
   }
