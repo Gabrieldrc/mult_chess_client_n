@@ -3,16 +3,18 @@ import styleSheet from "./ChatComponent.module.sass";
 import { useRouter } from "next/router";
 import MessagesPrintComponent from "./MessagesPrintComponent";
 import { useMessageListener } from "core/hooks/useMessageListener";
+import { useAppSelector } from "@appRedux/hooks";
 
 function ChatComponent() {
   const room = `${useRouter().query.room}`;
   const { messages, sendMessageAction } = useMessageListener();
   const send = sendMessageAction(room);
   const messageInputRef = useRef<HTMLTextAreaElement>(null);
+  const username = useAppSelector((state) => state.user.username);
 
   const sendMessage = useCallback(() => {
     const message = {
-      name: createName(),
+      name: username,
       message: messageInputRef.current?.value + "",
     };
     send(message);

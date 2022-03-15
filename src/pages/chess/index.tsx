@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import FormComponent from "@components/FormComponent/FormComponent";
+import FormComponent from "@components/FormComponent";
 import { useState, MouseEvent, useEffect, useRef } from "react";
 import WsResponse from "@interfaces/WsResponse";
 import { useAppDispatch } from "@appRedux/hooks";

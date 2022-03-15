@@ -1,10 +1,9 @@
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import ChatComponent from "@components/ChatComponent/ChatComponent";
-import ChessComponent from "@components/ChessComponent/ChessComponent";
-import { chessClient } from "@services/ChessClient";
-import RoomCodeComponent from "@components/RoomCodeComponent/RoomCodeComponent";
-import ChessClientWS from "@services/ChessClientWS";
+import ChatComponent from "@components/ChatComponent";
+import ChessComponent from "@components/ChessComponent";
+import { getChessState } from "@services/chess/client";
+import RoomCodeComponent from "@components/RoomCodeComponent";
 import style from "./room.module.sass";
 import { useAppSelector } from "@appRedux/hooks";
 import WsResponse from "@interfaces/WsResponse";
@@ -14,7 +13,7 @@ import { useChessClientWS } from "@hooks/useChessClientWS";
 
 function Room() {
   const router = useRouter();
-  const room: string = router.query.room;
+  const room: string = router.query.room ? (router.query.room as string) : "";
   const player = useAppSelector((state) => state.player.playerNumber);
   const [gameState, setGameState] = useState<object | null>(null);
   const chatClientWS = useRef(useChatClientWS());
@@ -22,7 +21,7 @@ function Room() {
 
   useEffect(() => {
     async function fetchInitialState() {
-      const resp = await chessClient.getState(room);
+      const resp = await getChessState(room);
       if (resp.status == 200) {
         setGameState({
           turn: resp.data["response"]["turn"],
