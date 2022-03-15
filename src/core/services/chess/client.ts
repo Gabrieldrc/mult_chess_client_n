@@ -1,5 +1,5 @@
 import axios from "axios";
-import { endpointsAPI } from "../api";
+import { endpointsAPI } from "@services/endpoints";
 
 const getHttpClient = () => axios;
 

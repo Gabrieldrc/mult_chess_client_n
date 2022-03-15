@@ -21,6 +21,7 @@
       "@interfaces/*": ["core/interfaces/*"],
       "@appRedux/*": ["core/redux/*"],
       "@hooks/*": ["core/hooks/*"],
+      "@helpers/*": ["core/helpers/*"],
       "@styles/*": ["styles/*"]
     }
   },

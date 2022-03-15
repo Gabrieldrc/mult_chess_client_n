@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 type FormComponent = {
   children: ReactNode;
-  submitHandler: undefined | ((e) => void);
+  submitHandler?: (e) => void;
 };
 const FormComponent = ({ children, submitHandler }: FormComponent) => {
   return (
