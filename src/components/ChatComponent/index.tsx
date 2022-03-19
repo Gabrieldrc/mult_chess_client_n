@@ -21,7 +21,7 @@ function ChatComponent() {
   }, [send, username]);
 
   const keyPressedHandle = useCallback(
-    (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    (e: any) => {
       if (e.code !== "Enter") return;
       if (messageInputRef.current?.value.length == 0) return;
       sendMessage();
