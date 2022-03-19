@@ -20,8 +20,8 @@ const useChessState = (room: string) => {
       const resp = await getChessState(room);
       if (resp.status == 200) {
         setGameState({
-          turn: resp.data["response"]["turn"],
-          board: resp.data["response"]["board"],
+          turn: resp.data["response"]["data"]["turn"],
+          board: resp.data["response"]["data"]["board"],
         });
       }
     };
