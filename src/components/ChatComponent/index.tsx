@@ -21,11 +21,11 @@ function ChatComponent() {
   }, [send, username]);
 
   const keyPressedHandle = useCallback(
-    (e: any) => {
+    (e: KeyboardEvent) => {
       if (e.code !== "Enter") return;
       if (messageInputRef.current?.value.length == 0) return;
       sendMessage();
-      messageInputRef?.current?.value = "";
+      messageInputRef.current.value = "";
       e.preventDefault();
     },
     [sendMessage]
