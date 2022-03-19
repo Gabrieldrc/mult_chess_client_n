@@ -20,16 +20,13 @@ function ChatComponent() {
     send(message);
   }, [send, username]);
 
-  const keyPressedHandle = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.code !== "Enter") return;
-      if (messageInputRef.current?.value.length == 0) return;
-      sendMessage();
-      messageInputRef.current.value = "";
-      e.preventDefault();
-    },
-    [sendMessage]
-  );
+  const keyPressedHandle = (e: any) => {
+    if (e.code !== "Enter") return;
+    if (messageInputRef.current?.value.length == 0) return;
+    sendMessage();
+    messageInputRef.current.value = "";
+    e.preventDefault();
+  };
 
   return (
     <section className={styleSheet.chat_open}>
@@ -41,7 +38,7 @@ function ChatComponent() {
           name="input"
           id="chat_input"
           className={styleSheet.mess_input}
-          onKeyPress={(e) => keyPressedHandle(e)}
+          onKeyPress={keyPressedHandle}
           ref={messageInputRef}
         ></textarea>
       </section>

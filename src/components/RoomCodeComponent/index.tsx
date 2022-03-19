@@ -21,10 +21,10 @@ function RoomCodeComponent({ roomCode }: RoomCodeProps) {
     }, 3000);
   }
 
-  function selectContent(e: Event) {
+  function selectContent(e: any) {
     e.preventDefault();
-    e?.target.select();
-    e?.target.setSelectionRange(0, 99999);
+    e.target.select();
+    e.target.setSelectionRange(0, 99999);
   }
   return (
     <div className={style.container}>

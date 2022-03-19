@@ -23,14 +23,14 @@ function ChessComponent({ board, playerNumber, turn }: ChessProps) {
       col.map((elemtent, j) => {
         const bgclr = flagCol ? style.bc_1 : style.bc_2;
         const gridElement = document.getElementById(gridId(i, j));
-        gridElement?.className = `${style.grid} ${bgclr}`;
+        gridElement.className = `${style.grid} ${bgclr}`;
         flagCol = !flagCol;
       });
       flagRow = !flagRow;
     });
   }, [board]);
 
-  function clickHandler(e: Event, i: number, j: number) {
+  function clickHandler(e: any, i: number, j: number) {
     e.preventDefault();
     //it cant select if its not its turn
     if (turn !== playerNumber) {
@@ -61,7 +61,7 @@ function ChessComponent({ board, playerNumber, turn }: ChessProps) {
         const htmlElement = document.getElementById(
           gridId(position.i, position.j)
         );
-        htmlElement?.className = `${style.grid} ${style.bc_hl}`;
+        htmlElement.className = `${style.grid} ${style.bc_hl}`;
       });
 
       return;
