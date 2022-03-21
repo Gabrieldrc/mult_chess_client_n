@@ -1,6 +1,5 @@
 import style from "./ChessComponent.module.sass";
-import { useCallback, useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import { useCallback, useRef } from "react";
 import PieceInterface from "@interfaces/Piece.interface";
 import IPosition from "@interfaces/Position.interface";
 import { emitPlay } from "@services/chess/socketClient";
@@ -14,37 +13,24 @@ type ChessProps = {
 
 function ChessComponent({ board, playerNumber, turn }: ChessProps) {
   const positionSelected = useRef<IPosition>(null);
-  const [isHighLight, setIsHighLight] = useState<boolean[][]>([]);
-
-  useEffect(() => {
-    const matrix = [];
-    board.map((col) => {
-      const row = [];
-      col.map(() => {
-        row.push(false);
-      });
-      matrix.push(row);
-    });
-    setIsHighLight(matrix);
-  }, [board]);
 
   const getNormalState = useCallback(() => {
-    const copy = isHighLight.concat([]);
     board.map((col, i) => {
-      col.map((elemtent, j) => {
-        if (isHighLight[i][j]) copy[i][j] = false;
+      col.map((el, j) => {
+        document.getElementById(gridId(i, j)).className = `${style.grid} ${
+          (i + j) % 2 == 0 ? style.bc_1 : style.bc_2
+        }`;
       });
     });
-    return copy;
-  }, [board, isHighLight]);
+  }, [board]);
 
   const getHightLightState = useCallback(
-    (state: boolean[][], i, j) => {
-      const copy = state.concat([]);
-      board[i][j]?.placeCanMove.map((position) => {
-        copy[position.i][position.j] = true;
+    (i: number, j: number) => {
+      board[i][j].placeCanMove.map((position) => {
+        document.getElementById(
+          gridId(position.i, position.j)
+        ).className = `${style.grid} ${style.bc_hl}`;
       });
-      return copy;
     },
     [board]
   );
@@ -74,8 +60,9 @@ function ChessComponent({ board, playerNumber, turn }: ChessProps) {
 
     if (element.player == playerNumber) {
       positionSelected.current = { i: i, j: j };
-      const currentState = getHightLightState(getNormalState(), i, j);
-      setIsHighLight(currentState);
+      getNormalState();
+      getHightLightState(i, j);
+
       return;
     }
 
@@ -91,6 +78,7 @@ function ChessComponent({ board, playerNumber, turn }: ChessProps) {
 
       try {
         emitPlay(positionSelected.current, position);
+        getNormalState();
       } catch (e) {
         console.debug(e);
       }
@@ -99,15 +87,6 @@ function ChessComponent({ board, playerNumber, turn }: ChessProps) {
   }
 
   function displayBoard() {
-    if (
-      !(
-        isHighLight.length == board.length &&
-        isHighLight[isHighLight.length - 1].length ==
-          board[board.length - 1].length
-      )
-    ) {
-      return "loading";
-    }
     return (
       <div
         className={playerNumber == 2 ? style.chess_board_r : style.chess_board}
@@ -120,7 +99,6 @@ function ChessComponent({ board, playerNumber, turn }: ChessProps) {
                 position={{ i, j }}
                 clickHandler={clickHandler}
                 key={`grid_${i}_${j}`}
-                highLight={isHighLight[i][j]}
               />
             ))}
           </div>
@@ -128,13 +106,6 @@ function ChessComponent({ board, playerNumber, turn }: ChessProps) {
       </div>
     );
   }
-
-  // useEffect(
-  //   function initPaintBoard() {
-  //     paintBoard();
-  //   },
-  //   [boardComponent, paintBoard]
-  // );
 
   return <>{displayBoard()}</>;
 }
