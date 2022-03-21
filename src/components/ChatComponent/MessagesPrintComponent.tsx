@@ -59,7 +59,7 @@ function MessageComponent({
   color,
   lastMessage,
 }: MessageProps) {
-  const ref = useRef<HTMLElement>();
+  const ref = useRef<any>();
   useEffect(() => {
     if (ref && lastMessage) {
       ref.current.scrollIntoView({ behavior: "smooth" });

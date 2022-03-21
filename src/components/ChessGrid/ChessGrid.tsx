@@ -1,10 +1,4 @@
-import {
-  MutableRefObject,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useRef } from "react";
 import Image from "next/image";
 
 import style from "@components/ChessComponent/ChessComponent.module.sass";
