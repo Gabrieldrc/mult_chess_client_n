@@ -1,5 +1,6 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
+const PIECE_SRC = "/images/chess_pieces/";
 
 export const endpointsAPI = {
   chess: {
@@ -13,5 +14,14 @@ export const endpointsSocket = {
   },
   service: {
     chat: `${SOCKET_URL}service/chat/`,
+  },
+};
+
+export const endpointsImage = {
+  chess: {
+    piece: {
+      getImage: (name: string, player: number) =>
+        `${PIECE_SRC}${name}_${player}.png`,
+    },
   },
 };
