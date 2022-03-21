@@ -1,9 +1,10 @@
 import style from "./ChessComponent.module.sass";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import PieceInterface from "@interfaces/Piece.interface";
 import IPosition from "@interfaces/Position.interface";
 import { emitPlay } from "@services/chess/socketClient";
+import ChessGrid from "@components/ChessGrid/ChessGrid";
 
 type ChessProps = {
   board: PieceInterface[][];
@@ -12,23 +13,41 @@ type ChessProps = {
 };
 
 function ChessComponent({ board, playerNumber, turn }: ChessProps) {
-  const PIECE_SRC = "/images/chess_pieces/";
-  const [boardComponent, setBoardComponent] = useState(<></>);
-  let positionSelected: IPosition | null = null;
+  const positionSelected = useRef<IPosition>(null);
+  const [isHighLight, setIsHighLight] = useState<boolean[][]>([]);
 
-  const paintBoard = useCallback(() => {
-    let flagRow = true;
-    board.map((col, i) => {
-      let flagCol = flagRow;
-      col.map((elemtent, j) => {
-        const bgclr = flagCol ? style.bc_1 : style.bc_2;
-        const gridElement = document.getElementById(gridId(i, j));
-        gridElement.className = `${style.grid} ${bgclr}`;
-        flagCol = !flagCol;
+  useEffect(() => {
+    const matrix = [];
+    board.map((col) => {
+      const row = [];
+      col.map(() => {
+        row.push(false);
       });
-      flagRow = !flagRow;
+      matrix.push(row);
     });
+    setIsHighLight(matrix);
   }, [board]);
+
+  const getNormalState = useCallback(() => {
+    const copy = isHighLight.concat([]);
+    board.map((col, i) => {
+      col.map((elemtent, j) => {
+        if (isHighLight[i][j]) copy[i][j] = false;
+      });
+    });
+    return copy;
+  }, [board, isHighLight]);
+
+  const getHightLightState = useCallback(
+    (state: boolean[][], i, j) => {
+      const copy = state.concat([]);
+      board[i][j]?.placeCanMove.map((position) => {
+        copy[position.i][position.j] = true;
+      });
+      return copy;
+    },
+    [board]
+  );
 
   function clickHandler(e: any, i: number, j: number) {
     e.preventDefault();
@@ -41,35 +60,28 @@ function ChessComponent({ board, playerNumber, turn }: ChessProps) {
 
     const element = board[i][j];
 
-    if (!positionSelected && element.name == "") {
+    if (!positionSelected.current && element.name == "") {
       console.log("position vacia");
 
       return;
     }
 
-    if (!positionSelected && element.player !== playerNumber) {
+    if (!positionSelected.current && element.player !== playerNumber) {
       console.log("no es tu ficha");
 
       return;
     }
 
     if (element.player == playerNumber) {
-      positionSelected = { i: i, j: j };
-      paintBoard();
-      const highlightPositions = board[i][j].placeCanMove;
-      highlightPositions.map((position) => {
-        const htmlElement = document.getElementById(
-          gridId(position.i, position.j)
-        );
-        htmlElement.className = `${style.grid} ${style.bc_hl}`;
-      });
-
+      positionSelected.current = { i: i, j: j };
+      const currentState = getHightLightState(getNormalState(), i, j);
+      setIsHighLight(currentState);
       return;
     }
 
-    if (positionSelected && element.player !== playerNumber) {
-      const position = board[positionSelected.i][
-        positionSelected.j
+    if (positionSelected.current && element.player !== playerNumber) {
+      const position = board[positionSelected.current.i][
+        positionSelected.current.j
       ].placeCanMove.find((position) => position.i == i && position.j == j);
       if (position == undefined) {
         console.log("no te puedes mover alli");
@@ -78,77 +90,53 @@ function ChessComponent({ board, playerNumber, turn }: ChessProps) {
       }
 
       try {
-        emitPlay(positionSelected, position);
+        emitPlay(positionSelected.current, position);
       } catch (e) {
         console.debug(e);
       }
-      positionSelected = null;
+      positionSelected.current = null;
     }
   }
 
-  useEffect(
-    function createBoard() {
-      const boardContents: JSX.Element[] = [];
-
-      board.map((col, i) => {
-        const rowHtml: JSX.Element[] = [];
-
-        col.map((elemtent, j) => {
-          const { name, player } = elemtent;
-          const grid = (
-            <div
-              id={gridId(i, j)}
-              key={`${i}${j}`}
-              onClick={(e) => clickHandler(e, i, j)}
-            >
-              {elemtent.name == "" ? (
-                ""
-              ) : (
-                <Image
-                  src={`${PIECE_SRC}${name}_${player}.png`}
-                  alt={`${i}${j}`}
-                  layout="intrinsic"
-                  width={50}
-                  height={50}
-                  key={`${PIECE_SRC}${name}_${player}`}
-                  className={playerNumber == 2 ? style.rotate : ""}
-                />
-              )}
-            </div>
-          );
-
-          rowHtml.push(grid);
-        });
-
-        boardContents.push(
+  function displayBoard() {
+    if (
+      !(
+        isHighLight.length == board.length &&
+        isHighLight[isHighLight.length - 1].length ==
+          board[board.length - 1].length
+      )
+    ) {
+      return "loading";
+    }
+    return (
+      <div
+        className={playerNumber == 2 ? style.chess_board_r : style.chess_board}
+      >
+        {board.map((col, i) => (
           <div key={`row_${i}`} className={style.row}>
-            {rowHtml}
+            {col.map((element, j) => (
+              <ChessGrid
+                piece={element}
+                position={{ i, j }}
+                clickHandler={clickHandler}
+                key={`grid_${i}_${j}`}
+                highLight={isHighLight[i][j]}
+              />
+            ))}
           </div>
-        );
-      }, []);
+        ))}
+      </div>
+    );
+  }
 
-      setBoardComponent(
-        <div
-          className={
-            playerNumber == 2 ? style.chess_board_r : style.chess_board
-          }
-        >
-          {boardContents}
-        </div>
-      );
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [board]
-  );
+  // useEffect(
+  //   function initPaintBoard() {
+  //     paintBoard();
+  //   },
+  //   [boardComponent, paintBoard]
+  // );
 
-  useEffect(
-    function initPaintBoard() {
-      paintBoard();
-    },
-    [boardComponent, paintBoard]
-  );
-
-  return <>{boardComponent}</>;
+  return <>{displayBoard()}</>;
 }
 
 export default ChessComponent;
