@@ -1,26 +1,20 @@
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+
 import ChatComponent from "@components/ChatComponent";
 import ChessComponent from "@components/ChessComponent";
 import RoomCodeComponent from "@components/RoomCodeComponent";
 import style from "./room.module.sass";
 import useChessState from "@hooks/useChessState";
 import PieceInterface from "@interfaces/Piece.interface";
-import * as chatWSClient from "@services/chatWSClient";
 
 function Room() {
   const router = useRouter();
   const room: string = router.query.room ? (router.query.room as string) : "";
   const { board, player, turn } = useChessState(room);
 
-  useEffect(() => {
-    chatWSClient.connectHandler(() => console.log("connected Chat"));
-    chatWSClient.joinChatRoom(room);
-  }, [room]);
-
   const renderChessContent = () => {
     if (!player || !turn || !board) {
-      return "loading...";
+      return "loading.....";
     }
     return (
       <div className={style.game_area}>

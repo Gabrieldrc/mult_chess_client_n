@@ -7,7 +7,7 @@ import { useAppSelector } from "@appRedux/hooks";
 
 function ChatComponent() {
   const room = `${useRouter().query.room}`;
-  const { messages, sendMessageAction } = useMessageListener();
+  const { messages, sendMessageAction } = useMessageListener(room);
   const send = sendMessageAction(room);
   const messageInputRef = useRef<HTMLTextAreaElement>(null);
   const username = useAppSelector((state) => state.user.username);

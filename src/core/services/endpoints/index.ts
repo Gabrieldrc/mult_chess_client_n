@@ -5,6 +5,8 @@ const PIECE_SRC = "/images/chess_pieces/";
 export const endpointsAPI = {
   chess: {
     getState: (room: string) => `${API_URL}chess/state?room=${room}`,
+    newGame: `${API_URL}chess/newGame`,
+    joinGame: (room: string) => `${API_URL}chess/joinGame?room=${room}`,
   },
 };
 

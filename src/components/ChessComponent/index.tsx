@@ -4,6 +4,7 @@ import PieceInterface from "@interfaces/Piece.interface";
 import IPosition from "@interfaces/Position.interface";
 import { emitPlay } from "@services/chess/socketClient";
 import ChessGrid from "@components/ChessGrid/ChessGrid";
+import useChessPlay from "@hooks/useChessPlay";
 
 type ChessProps = {
   board: PieceInterface[][];
@@ -13,6 +14,7 @@ type ChessProps = {
 
 function ChessComponent({ board, playerNumber, turn }: ChessProps) {
   const positionSelected = useRef<IPosition>(null);
+  const emitPlay = useChessPlay();
 
   const getNormalState = useCallback(() => {
     board.map((col, i) => {
