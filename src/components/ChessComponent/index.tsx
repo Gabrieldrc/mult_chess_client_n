@@ -2,7 +2,6 @@ import style from "./ChessComponent.module.sass";
 import { useCallback, useRef } from "react";
 import PieceInterface from "@interfaces/Piece.interface";
 import IPosition from "@interfaces/Position.interface";
-import { emitPlay } from "@services/chess/socketClient";
 import ChessGrid from "@components/ChessGrid/ChessGrid";
 import useChessPlay from "@hooks/useChessPlay";
 
