@@ -32,5 +32,9 @@ export const disconnect = (socket: Socket) => {
 };
 
 export const removeListener = (socket: Socket, listener: string): void => {
-  socket.removeAllListeners(listener);
+  socket.removeListener(listener);
+};
+
+export const removeListeners = (socket: Socket, listeners: string[]): void => {
+  listeners.map((listener) => socket.removeListener(listener));
 };
